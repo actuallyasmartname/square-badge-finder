@@ -33,7 +33,8 @@ for b in range(0, len(table)):
             if data[i]['state'] == 'Completed':
                 def downloadimg(i, date):
                     image_url = date[i]['imageUrl']
-                    filename = f"{date[i]['targetId']}.png"
+                    id = date[i]['targetId']
+                    filename = f"{id}.png"
                     time.sleep(.5)
                     r = requests.get(image_url, stream = True)
                     if r.status_code == 200:
@@ -47,7 +48,7 @@ for b in range(0, len(table)):
                         downloadimg(i, data)
                     else:
                         if img.shape[:2] != (150,150):
-                            print(f"{date[i]['targetId']} is a square badge!")
+                            print(f"{id} is a square badge!")
                         elif img.shape[:2] == (150,150):
                             quards = []
                             for i in range(0, 149+1):
@@ -55,12 +56,12 @@ for b in range(0, len(table)):
                             try:
                                 img[i][i][3]
                             except IndexError:
-                                print(f"{date[i]['targetId']} may be a square badge")
+                                print(f"{id} may be a square badge")
                             if [0,0,0,0] in quards:
-                                print(f"{date[i]['targetId']} is not a square badge")
+                                print(f"{id} is not a square badge")
                                 os.remove(filename)
                             else:
-                                print(f"{date[i]['targetId']} is a square badge!")
+                                print(f"{id} is a square badge!")
                 downloadimg(i, data)
         while temptable:
             temptable.pop()
