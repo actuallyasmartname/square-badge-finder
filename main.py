@@ -1,22 +1,18 @@
 from json import JSONDecodeError
-import cv2, os, requests, shutil, time
+import cv2, os, requests, shutil, time, io, csv, numpy, json
 from ids import table
-# get imgs
+
 temptable = []
-import io
-import csv
 for b in range(0, len(table)):
     temptable.insert(b, table[b])
     if b % 100 == 0 or len(table) < 100:
         def getdata(temptabl):
             output = io.StringIO()
-            writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
-            writer.writerow(temptabl)
+            csv.writer(output, quoting=csv.QUOTE_NONNUMERIC).writerow(temptabl)
             output.getvalue()
             url = f"https://thumbnails.roblox.com/v1/badges/icons?badgeIds={str(output.getvalue()).rstrip()}&size=150x150&format=Png&isCircular=false"
             return url
         data = requests.get(getdata(temptable)).json()['data']
-        import json
         for s in range(0, len(data)):
             try:
                 data[s]
@@ -28,12 +24,11 @@ for b in range(0, len(table)):
             try:
                 json.loads(lol.text)
             except JSONDecodeError:
-                dffdsfsd = 1
+                data[s]
             else:
                 print("Error.... retrying")
                 time.sleep(5)
-                data = getdata(temptable)
-        import numpy as np
+                data = requests.get(getdata(temptable)).json()['data']
         for i in range(0,len(data)):
             if data[i]['state'] == 'Completed':
                 def downloadimg(i, date):
@@ -56,7 +51,7 @@ for b in range(0, len(table)):
                         elif img.shape[:2] == (150,150):
                             quards = []
                             for i in range(0, 149+1):
-                                quards.append(np.array(img[i][i]).tolist())
+                                quards.append(numpy.array(img[i][i]).tolist())
                             try:
                                 img[i][i][3]
                             except IndexError:
